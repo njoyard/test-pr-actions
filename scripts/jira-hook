@@ -20,14 +20,22 @@ patterns = [
 regexps = list(map(lambda p: re.compile(p, re.I), patterns))
 
 
-def find_issues(text):
+def find_issues(text, patterns=regexps):
   return [
     match
-    for regexp in regexps
+    for regexp in patterns
     for match in re.findall(regexp, text)
   ]
 
 
 if __name__ == '__main__':
-  data = os.environ['GITHUB_EVENT_DATA']
-  print(data)
+  data = json.loads(os.environ['GITHUB_EVENT_DATA'])
+  if 'pull_request' in data:
+    issues = {issue for (keyword, issue) in find_issues(data['pull_request']['body'])}
+    issues += re.findall(issue_pattern, data['pull_request']['body'])
+    if len(issues):
+      print('Found issues: ', ', '.join(issues))
+    else:
+      print('Found no issues')
+  else:
+    print('No data found')
