@@ -1,1 +1,1 @@
-Testing PR changes handling with Github Actions
+Testing PR changes handling with Github Actions.
