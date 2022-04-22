@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+
+import json
+import os
+import re
+
+JIRA_URL = 'https://ultidev'
+JIRA_PROJECT = 'PRO'
+
+issue_pattern = f'({JIRA_PROJECT}-\\d+)'
+url_pattern = f'{JIRA_URL}/browse/{issue_pattern}'
+link_pattern = f'\\[[^\\]]+\\]\\({url_pattern}\\)'
+
+patterns = [
+  f'({keyword})(?: |:| :|: | : ){pattern}'
+  for keyword in ['closes', 'ref', 'refs', 'references']
+  for pattern in [issue_pattern, url_pattern, link_pattern]
+]
+
+regexps = list(map(lambda p: re.compile(p, re.I), patterns))
+
+
+def find_issues(text):
+  return [
+    match
+    for regexp in regexps
+    for match in re.findall(regexp, text)
+  ]
+
+
+if __name__ == '__main__':
+  data = os.environ['GITHUB_EVENT_DATA']
+  print(data)

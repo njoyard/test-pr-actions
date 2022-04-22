@@ -1,16 +1,16 @@
-name: Dump data on PR merged
+name: Jira PR hook
 on:
   pull_request:
     types:
       - closed
 jobs:
-  merge_dump:
+  jira_hook:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Dump github.event data
+      - uses: actions/checkout@v3
+      - name: Call Jira hook
         env:
           GITHUB_EVENT_DATA: ${{ toJson(github.event) }}
         run: |
-          echo "$GITHUB_EVENT_DATA"
-
+          ./scripts/jira-hook
