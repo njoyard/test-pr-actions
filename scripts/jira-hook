@@ -32,7 +32,7 @@ if __name__ == '__main__':
   data = json.loads(os.environ['GITHUB_EVENT_DATA'])
   if 'pull_request' in data:
     issues = {issue for (keyword, issue) in find_issues(data['pull_request']['body'])}
-    issues += {issue for issue in re.findall(issue_pattern, data['pull_request']['body'])}
+    issues |= re.findall(issue_pattern, data['pull_request']['body'])
     if len(issues):
       print('Found issues: ', ', '.join(issues))
     else:
