@@ -1,0 +1,16 @@
+name: Dump data on PR merged
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  merge_dump:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump github.event data
+        env:
+          GITHUB_EVENT_DATA: ${{ toJson(github.event) }}
+        run: |
+          echo "$GITHUB_EVENT_DATA"
+
